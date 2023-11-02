@@ -5,7 +5,7 @@ const Learn = () => {
     const [data, setData] = useState([])
         useEffect(()=>{
             async function getData(){
-                const locate = await fetch('://fakestoreapi.com/productshttps')
+                const locate = await fetch(`${api.base}weather?q=${forSearch}&units=metric&APPID=${api.key}`)
                 const res = await locate.json()
                 setData(res)
             }
