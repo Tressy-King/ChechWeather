@@ -7,58 +7,46 @@ const api = {
 
 const WeatherApp = () => {
     const [search, setSearch] = useState('');
-    const [weather, setWeather] = useState('');
+    const [weather, setWeather] = useState({});
     const [loading, setLoading] = useState(false);
-    const [background, setBackground] = useState('weather-app/public/sunny.webp');
-    const [humidity, setHumidity] = useState(null);
 
-    const cloudy = '/cloudy.png';
-    const partly = '/partly-cloudy.png';
-    const sunny = '/sunny.png';
-    const rain = 'weather-app/public/rain.webp';
-    const sun = 'weather-app/public/sunny.webp';
-    const cloud = 'weather-app/public/cloudy.webp';
 
-    const backgroudChange = () => {
-        if (humidity !== null) {
-            if (humidity < 30) {
-                setBackground(rain);
-            } else {
-                setBackground(sun);
-            }
-        }
-    }
+    const cloudy = '/cloudy.png'
+    const partly = '/partly-cloudy.png'
+    const sunny = '/sunny.png'
 
-    useEffect(() => {
-        backgroudChange();
-    }, [humidity]);
 
     async function press() {
         setLoading(true);
 
         try {
-            const data = await fetch(`${api.base}weather?q=${search}&units=metric&APPID=${api.key}`);
-            const res = await data.json();
-            console.log(res);
+            const data = await fetch(`${api.base}weather?q=${search}&units=metric&APPID=${api.key}`)
+            const result = await data.json()
+            setWeather(result)
+            console.log(result)
+
 
             if (data) {
-                setHumidity(res.main.humidity);
-                setWeather(res.name);
-                console.log(res.name + " is " + res.main.humidity);
+                setWeather(result)
             } else {
-                setWeather({});
+                setWeather({})
             }
-
         } catch (error) {
-            console.log('Error while trying to fetch', error);
+            console.log('An error occured while fetching', error)
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
     }
 
+    useEffect(() => {
+
+    }, [search])
+
+
+
     return (
         <>
-            <header style={{ background: `url(${background})`}}>
+            <header>
                 <div>
                     <h1>Weather App</h1>
                     <input
@@ -72,14 +60,27 @@ const WeatherApp = () => {
 
                 <div className="info-holder">
                     <div className="image">
-                        <img src={partly} alt="" />
+                        {weather.main && weather.main.temp < 10 ? (
+                            <img src={cloudy} alt="partly" />
+                        ) : weather.main && weather.main.temp >= 15 ? (
+                            <img src={partly} alt="sunny" />
+                        ) : weather.main && weather.main.temp >= 20 ? (
+                            <img src={sunny} alt="cloudy" />
+                        ) : <img className="unique-img" src="/collector.png"/>
+                        
+                        }
+ 
                     </div>
                     <div className="description">
-                        <h4>{weather}</h4>
-                        <h4>City/Town to be shown here</h4>
-                        <h4>Temperature to be shown here</h4>
-                        <h4>Humidity to be shown here</h4>
-                        <h4>Wind speed to be shown here</h4>
+                        {weather.main ? <>
+                            <h4>{weather.name}</h4>
+                            <h4>Wind Speed: {weather.wind.speed} km/h <img style={{width:'30px', background:'none'}} src="/wind.png"/></h4>
+                            <h4>Temperature: {weather.main.temp} &deg;C</h4>
+                            <h4>{weather.weather[0].description}</h4>
+                            {/* <h4>Humidity: {weather.main.humidity}%</h4> */}
+                        </> : 'No City Found'
+                        }
+
                     </div>
                 </div>
             </header>
