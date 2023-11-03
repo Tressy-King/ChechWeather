@@ -9,15 +9,15 @@ const WeatherApp = () => {
     const [search, setSearch] = useState('');
     const [weather, setWeather] = useState('');
     const [loading, setLoading] = useState(false);
-    const [background, setBackground] = useState('weather-app/public/sunny.webp');
+    const [background, setBackground] = useState('giphy.gif');
     const [humidity, setHumidity] = useState(null);
 
     const cloudy = '/cloudy.png';
     const partly = '/partly-cloudy.png';
     const sunny = '/sunny.png';
-    const rain = 'weather-app/public/rain.webp';
-    const sun = 'weather-app/public/sunny.webp';
-    const cloud = 'weather-app/public/cloudy.webp';
+    const rain = 'rain.webp';
+    const sun = 'sunny.webp';
+    const cloud = 'cloudy.webp';
 
     const backgroudChange = () => {
         if (humidity !== null) {
@@ -59,27 +59,42 @@ const WeatherApp = () => {
     return (
         <>
             <header style={{ background: `url(${background})`}}>
-                <div>
-                    <h1>Weather App</h1>
-                    <input
-                        type="text"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        placeholder="Enter A City Or Town"
-                    />
-                    <button onClick={press}>{loading ? 'searching' : 'search'}</button>
-                </div>
-
-                <div className="info-holder">
-                    <div className="image">
-                        <img src={partly} alt="" />
+                <div className="blur">
+                    <div>
+                        <h1>Weather App</h1>
+                        <div className="search">
+                            <input
+                                type="text"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                placeholder="Enter A City Or Town"
+                            />
+                            <button onClick={press}>{loading ? 'Searching' : 'Search'}</button>
+                        </div>
                     </div>
-                    <div className="description">
-                        <h4>{weather}</h4>
-                        <h4>City/Town to be shown here</h4>
-                        <h4>Temperature to be shown here</h4>
-                        <h4>Humidity to be shown here</h4>
-                        <h4>Wind speed to be shown here</h4>
+
+                    <div className="info-holder">
+                        <div className="image">
+                            <img src={partly} alt="" />
+                        </div>
+                        <div className="description">
+                            <div className="whenSearch">
+                                <h4>{weather}</h4>
+                                {/* <h4>{weather}</h4>
+                                <h4>{weather}</h4>
+                                <h4>{weather}</h4>
+                                <h4>{weather}</h4>
+                                <h4>{weather}</h4>
+                                <h4>{weather}</h4> */}
+
+                            </div>
+                            <div className="defualt">
+                                <h4>City/Town to be shown here</h4>
+                                <h4>Temperature to be shown here</h4>
+                                <h4>Humidity to be shown here</h4>
+                                <h4>Wind speed to be shown here</h4>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </header>

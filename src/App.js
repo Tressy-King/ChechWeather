@@ -4,7 +4,7 @@ import WeatherApp from "./fetching/Weather-app";
 
 function Weather() {
   return (
-    <div>
+    <div className="main">
       <WeatherApp/>
     </div>
   );
