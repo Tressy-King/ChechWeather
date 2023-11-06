@@ -9,12 +9,42 @@ const WeatherApp = () => {
     const [search, setSearch] = useState('');
     const [weather, setWeather] = useState({});
     const [loading, setLoading] = useState(false);
+    const [background, setBackground] = useState('/allWeather.webp');
+    const [humidity, setHumidity] = useState(null);
+    // const [temperature, setTemperature] = useState();
 
 
-    const cloudy = '/cloudy.png'
+    const sunny = '/sunny.png';
+    const brokenClouds = '/broken-clouds.png';
     const partly = '/partly-cloudy.png'
-    const sunny = '/sunny.png'
+    const cloudy = '/cloudy.png';
+    const raining = '/raining.png'
 
+    const rain = '/justRain.webp';
+    const sun = '/justBlue.webp';
+    const brokenCloud = '/brokenClouds.webp';
+    const cloud = '/justClouds.webp';
+    const clear = '/justClear.webp';
+
+    const backgroudChange = () => {
+        console.log('Humidity:', humidity);
+        
+            if (weather.weather && weather.weather[0] && weather.weather[0].description === "clear sky") {
+                setBackground(clear || sun);
+            } else if (weather.weather && weather.weather[0] && weather.weather[0].description === "few clouds" || weather.weather && weather.weather[0] && weather.weather[0].description === "overcast clouds") {
+                setBackground(brokenCloud);
+            } else if (weather.weather && weather.weather[0] && weather.weather[0].description === "scattered clouds"){
+                setBackground(cloud);
+            }else if(weather.weather && weather.weather[0] && weather.weather[0].description === "light rain"){
+                setBackground(rain)
+            }else {
+                setBackground('/allWeather.webp')
+            }
+        }
+
+    useEffect(() => {
+        backgroudChange();
+    }, [humidity]);
 
     async function press() {
         setLoading(true);
@@ -25,9 +55,10 @@ const WeatherApp = () => {
             setWeather(result)
             console.log(result)
 
-
             if (data) {
                 setWeather(result)
+                setHumidity(result.main.humidity)
+                // setTemperature(result.main.temp)
             } else {
                 setWeather({})
             }
@@ -46,41 +77,50 @@ const WeatherApp = () => {
 
     return (
         <>
-            <header>
-                <div>
-                    <h1>Weather App</h1>
-                    <input
-                        type="text"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        placeholder="Enter A City Or Town"
-                    />
-                    <button onClick={press}>{loading ? 'searching' : 'search'}</button>
-                </div>
+            <header style={{ background: `url(${background})` }}>
+                <div className="blur">
+                    <div>
+                        <h1>Weather App</h1>
+                        <div className="search">
 
-                <div className="info-holder">
-                    <div className="image">
-                        {weather.main && weather.main.temp < 10 ? (
-                            <img src={cloudy} alt="partly" />
-                        ) : weather.main && weather.main.temp >= 15 ? (
-                            <img src={partly} alt="sunny" />
-                        ) : weather.main && weather.main.temp >= 20 ? (
-                            <img src={sunny} alt="cloudy" />
-                        ) : <img className="unique-img" src="/collector.png"/>
-                        
-                        }
- 
+                            <input
+                                type="text"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                placeholder="Enter A City Or Town"
+                            />
+                            <button onClick={press}>{loading ? 'Searching' : 'Search'}</button>
+
+                        </div>
                     </div>
-                    <div className="description">
-                        {weather.main ? <>
-                            <h4>{weather.name}</h4>
-                            <h4>Wind Speed: {weather.wind.speed} km/h <img style={{width:'30px', background:'none'}} src="/wind.png"/></h4>
-                            <h4>Temperature: {weather.main.temp} &deg;C</h4>
-                            <h4>{weather.weather[0].description}</h4>
-                            {/* <h4>Humidity: {weather.main.humidity}%</h4> */}
-                        </> : 'No City Found'
-                        }
-
+                    <div className="info-holder">
+                        <div className="image">
+                            {weather.weather && weather.weather[0] && weather.weather[0].description === "clear sky" ? (
+                                <img src={sunny} alt="partly" />
+                            ) : weather.weather && weather.weather[0] && weather.weather[0].description === "scattered clouds" ? (
+                                <img src={partly} alt="sunny" />
+                            ) : weather.weather && weather.weather[0] && weather.weather[0].description === "broken clouds" ? (
+                                <img src={partly} alt="cloudy" />
+                            ) : weather.weather && weather.weather[0] && weather.weather[0].description === "few clouds" || weather.weather && weather.weather[0] && weather.weather[0].description === "overcast clouds" ? (
+                                <img src={brokenClouds} alt="cloudy" />
+                            ) : weather.weather && weather.weather[0] && weather.weather[0].description === "light snow" ? (
+                                <img src={cloudy} alt="cloudy" />
+                            ) : weather.weather && weather.weather[0] && weather.weather[0].description === "light rain" ? (
+                                <img src={raining} alt="cloudy" />
+                            ) : <img className="unique-img" src="/collector.png" />
+                            }
+                        </div>
+                        <div className="description">
+                            {weather.main ? <>
+                                <h4>City/Town: {weather.name}</h4>
+                                <h4>Wind Speed: {weather.wind.speed} km/h </h4>
+                                <h4>Temperature: {weather.main.temp} &deg;C</h4>
+                                <h4>{weather.weather[0].description}</h4>
+                                <h4>Humidity: {weather.main.humidity}%</h4>
+                                <h4>Country: {weather.sys.country}</h4>
+                            </> : 'No City Found'
+                            }
+                        </div>
                     </div>
                 </div>
             </header>
